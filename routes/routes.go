@@ -6,7 +6,8 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-func RegisterRoutes(router *gin.Engine) {
+func RegisteredRoutes( )*gin.Engine {
+	router := gin.Default()
 	// For master data
 	router.GET("/suppliers", controllers.GetSuppliers)
 	router.GET("/customers", controllers.GetCustomers)
@@ -22,4 +23,5 @@ func RegisterRoutes(router *gin.Engine) {
 
 	// For stock report
 	router.GET("/stock", controllers.GetStockReport)
+	return router
 }

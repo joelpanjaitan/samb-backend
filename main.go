@@ -20,7 +20,7 @@ func main(){
 		sqlDB.Close() 
 	}()
 
-	router := routes.SetupRouter()
+	router := routes.RegisteredRoutes()
 
 	quit := make(chan os.Signal, 1)
 	signal.Notify(quit, syscall.SIGINT, syscall.SIGTERM)
