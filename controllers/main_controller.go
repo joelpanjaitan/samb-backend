@@ -24,7 +24,13 @@ func GetSuppliers(c *gin.Context) {
 
 func GetCustomers(c *gin.Context) {
 	var customers []models.Customer
-	config.DataBase.Find(&customers)
+	err := config.DataBase.Raw("SELECT * FROM MasterCustomer").Scan(&customers).Error
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{
+			"error": fmt.Sprintf("Error fetching customers data: %s", err.Error()),
+		})
+		return 
+	}
 	c.JSON(http.StatusOK, customers)
 }
 
