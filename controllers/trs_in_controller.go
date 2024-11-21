@@ -12,10 +12,32 @@ import (
 func CreateTrxIn(c *gin.Context) {
 	var header models.TrxInHeader
 	if err := c.ShouldBindJSON(&header); err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		c.JSON(http.StatusBadRequest, gin.H{"Error": err.Error()})
 		return
 	}
-	config.DataBase.Create(&header)
+
+	result := config.DataBase.Exec(
+		`INSERT INTO TransaksiPenerimaanBarangHeader (TrxInNo, WhsIdf, TrxInDate, TrxInSuppIdf, TrxInNotes) 
+		VALUES (?, ?, ?, ?, ?)`,
+		header.TrxInNo, header.WhsIdf, header.TrxInDate, header.TrxInSuppIdf, header.TrxInNotes,
+	)
+	if result.Error != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": result.Error.Error()})
+		return
+	}
+	lastCreatedID := header.TrxInPK
+	for _, detail := range header.Details {
+		detail.TrxInIDF = lastCreatedID 
+		err := config.DataBase.Exec(
+			`INSERT INTO TransaksiPenerimaanBarangDetail (TrxInIDF, TrxInDProductIdf, TrxInDQtyDus, TrxInDQtyPcs) 
+			VALUES (?, ?, ?, ?)`,
+			detail.TrxInIDF, detail.TrxInDProductIdf, detail.TrxInDQtyDus, detail.TrxInDQtyPcs,
+		).Error
+		if err != nil {
+			c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+			return
+		}
+	}
 	c.JSON(http.StatusOK, gin.H{"message": "Transaction Created"})
 }
 
