@@ -1,8 +1,8 @@
 package controllers
 
 import (
+	"fmt"
 	"net/http"
-
 	"samb-backend/config"
 	"samb-backend/models"
 
@@ -11,7 +11,14 @@ import (
 
 func GetSuppliers(c *gin.Context) {
 	var suppliers []models.Supplier
-	config.DataBase.Find(&suppliers)
+	err := config.DataBase.Raw("SELECT * FROM MasterSupplier").Scan(&suppliers).Error
+
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{
+			"error": fmt.Sprintf("Error fetching suppliers data: %s", err.Error()),
+		})
+		return
+	}
 	c.JSON(http.StatusOK, suppliers)
 }
 
