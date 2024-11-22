@@ -48,6 +48,13 @@ func GetProducts(c *gin.Context) {
 
 func GetWarehouses(c *gin.Context) {
 	var warehouses []models.Warehouse
-	config.DataBase.Find(&warehouses)
+	err := config.DataBase.Raw("SELECT * FROM MasterWarehouse").Scan(&warehouses).Error
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{
+			"error": fmt.Sprintf("Error fetching warehouse data: %s", err.Error()),
+		})
+		return 
+	}
+	// config.DataBase.Find(&warehouses)
 	c.JSON(http.StatusOK, warehouses)
 }
