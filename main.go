@@ -26,7 +26,7 @@ func main(){
 	router := routes.RegisteredRoutes()
 
 	headersOk := handlers.AllowedHeaders([]string{"X-Requested-With", "Content-Type", "Authorization"})
-	originsOk := handlers.AllowedOrigins([]string{"http://localhost:3000", "https://magenta-smakager-3db320.netlify.app"}) // Allow the frontend URL
+	originsOk := handlers.AllowedOrigins([]string{"http://localhost:3000", "https://magenta-smakager-3db320.netlify.app"})
 	methodsOk := handlers.AllowedMethods([]string{"GET", "POST", "PUT", "DELETE", "OPTIONS"})
 
 	handleRouterCORS :=handlers.CORS(originsOk, headersOk, methodsOk)(router)
