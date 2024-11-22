@@ -55,6 +55,5 @@ func GetWarehouses(c *gin.Context) {
 		})
 		return 
 	}
-	// config.DataBase.Find(&warehouses)
 	c.JSON(http.StatusOK, warehouses)
 }
