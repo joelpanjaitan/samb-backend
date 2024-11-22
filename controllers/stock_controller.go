@@ -4,17 +4,13 @@ import (
 	"net/http"
 
 	"samb-backend/config"
+	"samb-backend/models"
 
 	"github.com/gin-gonic/gin"
 )
 
 func GetStockReport(c *gin.Context) {
-	var stockReport []struct {
-		WarehouseName string `json:"warehouse"`
-		ProductName   string `json:"product"`
-		QtyDus        int    `json:"qty_dus"`
-		QtyPcs        int    `json:"qty_pcs"`
-	}
+	var stockReport []models.Stock
 
 	query := `
 		SELECT 
